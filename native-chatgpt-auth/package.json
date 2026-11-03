@@ -1,0 +1,17 @@
+{
+  "name": "@local/dsh-native-chatgpt-auth",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.mjs",
+    "./official": "./official.mjs"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "test:native": "node test/native-integration.mjs"
+  },
+  "peerDependencies": {
+    "@siwc/local": "0.1.0"
+  }
+}

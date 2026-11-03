@@ -8,6 +8,14 @@ dsh-superagent is a proactive coding agent for one GitHub repository, packaged a
 
 It is also a way of working with an agent: **take as little human attention as possible, and give as much value as possible.** An agent that can act for a whole team can also waste a whole team's attention, so it acts only when asked or when a rule the team wrote allows it, and speaks only when someone must act or can use a result. [docs/000-philosophy.md](docs/000-philosophy.md) explains the principle and what it asks of the operator.
 
+## ChatGPT subscription connector (this fork)
+
+This fork adds native ChatGPT sign-in and refresh, Models connection controls, a local Superagent task composer, and an authenticated macOS launcher. The upstream Engine, router, worker presets, tools and delegation are unchanged. It includes the dependency patch and OAuth adapter needed to reproduce the integration, not just the panel UI.
+
+Start with **[macOS installation and sign-in](integration/INSTALL.md)**. Each user signs in with their own ChatGPT account; no API key or existing Codex credential file is required. Model access depends on the account. The adapter uses a pinned official OpenAI sign-in SDK internal module and requires review before upgrades.
+
+[Exact changes and pins](integration/OPENAI-SUBSCRIPTION.md) · [Launcher and troubleshooting](integration/MACOS-LOCAL.md) · [Auth adapter](native-chatgpt-auth/README.md)
+
 ## Setup
 
 Setup has many steps, so an agent does it with you. Ask your coding agent:

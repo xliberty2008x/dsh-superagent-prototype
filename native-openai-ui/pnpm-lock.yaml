@@ -1,0 +1,44 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: false
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@deepseek-ai/dsh-credentials':
+        specifier: 0.2.1-rc.3
+        version: 0.2.1-rc.3
+      '@deepseek-ai/dsh-web-app':
+        specifier: link:../../runtime/node_modules/@deepseek-ai/dsh-web-app
+        version: link:../../runtime/node_modules/@deepseek-ai/dsh-web-app
+      zod:
+        specifier: 4.4.3
+        version: 4.4.3
+
+packages:
+
+  '@deepseek-ai/dsh-brand@0.2.1-rc.3':
+    resolution: {integrity: sha512-bPpKuu05gZj7gdW15z6PL2dz4+A4MDEafgWOrhexFO7f08g1NeI4fhE4YNOxd8N2ua+tZJjsKCMAIobFMAaGOw==}
+    peerDependencies:
+      '@deepseek-ai/cordis': ~4.0.5
+
+  '@deepseek-ai/dsh-credentials@0.2.1-rc.3':
+    resolution: {integrity: sha512-KM/L49Vl/WAGeSxHs3mrkJ29E6VS3EE9gSO5nRVVVBSXu35GzI5MuycWGlqth4fp34Xd3ZwEtelG8jo/T8j14A==}
+    peerDependencies:
+      '@deepseek-ai/cordis': ~4.0.5
+
+  zod@4.4.3:
+    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
+
+snapshots:
+
+  '@deepseek-ai/dsh-brand@0.2.1-rc.3': {}
+
+  '@deepseek-ai/dsh-credentials@0.2.1-rc.3':
+    dependencies:
+      '@deepseek-ai/dsh-brand': 0.2.1-rc.3
+
+  zod@4.4.3: {}

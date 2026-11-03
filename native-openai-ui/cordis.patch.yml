@@ -1,0 +1,3 @@
+- insert:
+    - id: native-openai-ui
+      name: '@local/dsh-native-openai-ui'

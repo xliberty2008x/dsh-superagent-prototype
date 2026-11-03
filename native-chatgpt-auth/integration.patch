@@ -1,0 +1,61 @@
+--- a/node_modules/@deepseek-ai/dsh-llm-pi-ai/lib/index.js
++++ b/node_modules/@deepseek-ai/dsh-llm-pi-ai/lib/index.js
+@@ -1,4 +1,7 @@
+ import { launchEnvironmentOf } from "@deepseek-ai/dsh-launch-environment";
++import { withNativeChatGPTAuth } from "@local/dsh-native-chatgpt-auth";
++import { resolveDshHome } from "@deepseek-ai/dsh-home-paths";
++import { authorize as officialAuthorize, refreshConnection as officialRefreshConnection } from "@local/dsh-native-chatgpt-auth/official";
+ import { CONTEXT_WINDOW_EXCEEDED_CODE, EMPTY_RESPONSE_CODE, IMAGE_OFFLOAD_REQUIRED_CODE, INVALID_CREDENTIAL_CODE, LlmAdapter, LlmError, QUOTA_EXCEEDED_CODE, ReasoningEffortId, RetryPolicySchema, assertUsableApiKey, attributionHeaders, contentHasImage, isContextWindowExceededError, isQuotaExceededError, normalizeApiKey, offloadedImageText, projectOffloadedImages, requestImageHandleText, requiredImageOffload, resolveImageAttachmentAccess, resolveRetryPolicy } from "@deepseek-ai/dsh-llm";
+ import { deepEqualJson } from "@deepseek-ai/dsh-util-values";
+ import { MAX_TIMER_DELAY_MS, idleWatchdog, timeoutOf } from "@deepseek-ai/dsh-timeout";
+@@ -13,7 +16,7 @@
+ import { isContextOverflow } from "@earendil-works/pi-ai/utils/overflow";
+ import { homedir } from "node:os";
+ import { access } from "node:fs/promises";
+-import { resolve } from "node:path";
++import { resolve, join } from "node:path";
+ //#region lib/types/replay.js
+ /**
+ * Durable pi-ai replay metadata and assistant-history reconstruction.
+@@ -368,8 +371,20 @@
+ * @returns the catalog provider, or `undefined` for a route pi-ai does not ship
+ *   or ships without a chat model.
+ */
++const nativeChatGPTProviders = new WeakMap();
+ function catalogProvider(provider) {
+-	return catalogProviders().get(provider);
++	const installed = catalogProviders().get(provider);
++	if (installed?.id !== "openai") return installed;
++	let adapted = nativeChatGPTProviders.get(installed);
++	if (adapted === undefined) {
++		adapted = withNativeChatGPTAuth(installed, {
++			metadataDir: () => join(resolveDshHome(), "native-chatgpt-auth"),
++			authorize: officialAuthorize,
++			refreshConnection: officialRefreshConnection,
++		});
++		nativeChatGPTProviders.set(installed, adapted);
++	}
++	return adapted;
+ }
+ /**
+ * Every provider route the installed pi-ai catalog ships and this adapter
+@@ -2451,7 +2466,7 @@
+ * refuses to start without one. The harness keeps no installation ID meant for
+ * a third-party account sign-in, so the route signs in with an API key.
+ */
+-const UNSERVED_OAUTH = new Set(["openai"]);
++const UNSERVED_OAUTH = new Set();
+ /**
+ * The login methods one catalog provider offers.
+ *
+@@ -2589,7 +2604,9 @@
+ 						relay(event, session);
+ 					},
+ 					prompt: (prompt) => session.prompt(restate(prompt))
+-				});
++				}, providerId === "openai" && type === "oauth"
++					? { previousCredential: await auth.credentials.read(providerId) }
++					: undefined);
+ 			}
+ 		});
+ 	}

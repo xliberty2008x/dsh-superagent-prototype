@@ -1,5 +1,14 @@
-node_modules/
+node_modules
 lib/
 .artifacts/
 .env
 coverage/
+
+# Local installation and authentication state (never distribute)
+harness-home/
+state/
+runtime/
+sign-in-with-chatgpt-devkit/
+ui-browser-handoff.json
+ui.pid
+*.log

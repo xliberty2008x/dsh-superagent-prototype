@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import type { SearchView } from './api.ts'
 import { Button, Dot, Icon, Input, Modal, SegmentedTabs } from './controls.tsx'
+import { NewTaskButton } from './chatgpt-connect.tsx'
 import type { DeploymentForm } from './deployment.tsx'
 import { EvalStatus } from './eval.tsx'
 import { ExecutionStatus } from './execution.tsx'
@@ -99,7 +100,8 @@ function SearchResults({ result, query, onClose }: { result: SearchView; query: 
 }
 
 function Header({ masterId }: { masterId: string | undefined }) {
-  const { t, call, openSession, notify } = usePanel()
+  const { t, call, openSession, notify, navigate } = usePanel()
+  const { reload } = usePanelData()
   const [glossary, setGlossary] = useState(false)
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<{ query: string; value: SearchView }>()
@@ -124,6 +126,11 @@ function Header({ masterId }: { masterId: string | undefined }) {
   return <header className="dt-head">
     <div className="dt-head-title"><h1 className="dt-title">{t('title')}</h1></div>
     <div className="dt-toolbar">
+      <NewTaskButton onSubmitted={() => {
+        navigate({ page: 'execution', query: { filter: 'open' } })
+        notify('Task submitted. It will appear in Execution after routing.')
+        void reload()
+      }} />
       <form ref={search} className="dt-search" role="search" onSubmit={submit} onKeyDown={event => { if (event.key === 'Escape') show() }}>
         <Input type="search" icon={<Icon name="search" />} value={query} placeholder={t('searchPlaceholder')} aria-label={t('searchLabel')}
           onChange={event => { setQuery(event.target.value); if (!event.target.value) show() }} />
